@@ -26,10 +26,23 @@
             </a>
 
             <nav class="flex items-center gap-4 text-sm">
-                <a href="/admin/login"
-                   class="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors font-medium">
-                    Log in
-                </a>
+                @auth
+                    <span class="text-gray-600">Hi, <strong>{{ auth()->user()->name }}</strong></span>
+                    @if(auth()->user()->role === \App\Enums\UserRole::Admin)
+                        <a href="/admin" class="text-gray-600 hover:text-gray-900 transition-colors font-medium">Admin Panel</a>
+                    @endif
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="text-red-500 hover:text-red-700 transition-colors font-medium cursor-pointer">
+                            Log out
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}"
+                       class="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors font-medium">
+                        Log in
+                    </a>
+                @endauth
             </nav>
         </div>
     </header>
@@ -43,10 +56,23 @@
             <p class="text-lg text-gray-500 mb-8 max-w-lg mx-auto">
                 Browse available venues, check real-time availability, and reserve your space in just a few clicks.
             </p>
-            <a href="/admin/login"
-               class="inline-block px-6 py-3 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors text-sm font-medium">
-                Get Started
-            </a>
+            @auth
+                @if(auth()->user()->role === \App\Enums\UserRole::Admin)
+                    <a href="/admin"
+                       class="inline-block px-6 py-3 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors text-sm font-medium">
+                        Go to Admin Dashboard
+                    </a>
+                @else
+                    <div class="text-sm text-gray-500">
+                        You are logged in as a user! Soon you will be able to book venues here.
+                    </div>
+                @endif
+            @else
+                <a href="{{ route('login') }}"
+                   class="inline-block px-6 py-3 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors text-sm font-medium">
+                    Get Started
+                </a>
+            @endauth
         </div>
     </main>
 
